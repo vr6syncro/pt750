@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  pt750:
+    image: vr6syncro/pt750
+    container_name: PT750
+    environment:
+      - L_PRINTERS=Name=tcp://IP:9100    
+    ports:
+      - 5000:5000
+    restart: unless-stopped
