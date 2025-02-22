@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.10
 
 WORKDIR /app
 ENV PYTHONPATH=/app
@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     libudev-dev \
     libsnmp-base \
     snmp-mibs-downloader \
+    libgl1 \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
