@@ -1,59 +1,122 @@
-# Docker Compose
-Added Docker Compose File for easy use.
+# Brother PT-P750W Web Interface
 
+Modern web-based label printing interface for Brother PT-P750W/PT-E550W label printers using the Brother Raster Command protocol.
 
-# pt750
+## Features
 
-Some simple utilities around printer to a Brother P-Touch PT-P750W.
+- **Web Interface**: Clean, responsive Bootstrap UI for label creation
+- **Multiple Label Types**: Text, QR codes, ArUco markers, cable wraps, and flags
+- **Font Management**: Upload and manage custom TTF/OTF fonts
+- **Printer Status**: Real-time status monitoring with visual indicators
+- **Tape Detection**: Automatic tape size detection from printer
+- **Metric/Imperial**: Toggle between mm and inch measurements
+- **Docker Ready**: Easy deployment with Docker Compose
 
-Currently, this only works over tcp, but with small effort could work
-against usb connected devices as well.
+## Quick Start
 
-This includes a command line for printing some pre-formatted label
-types, including:
+### Docker Compose (Recommended)
 
-- text: plain text label with one or more lines of text
-- wrap: vertical lines of text suitable for cat5 wrap using flex tape
-- qr: qr code with optional text line
-- wifi: qr code for wifi setup (ssid/password)
-- flag: suitable for a cable flag
+```bash
+git clone https://github.com/vr6syncro/pt750.git
+cd pt750
+docker-compose up -d
+```
 
-This also includes a web interface for printing labels, as well as
-a docker container set up for label printing.
+Access the web interface at `http://localhost:8080`
 
-The only necessary environment variable to set on the docker container
-is L_PRINTERS, a comma-separated list of key=value pairs that map from
-friendly name to printer uri:
+### Manual Installation
 
-`L_PRINTERS=office=tcp://some.printer:9100,kitchen=tcp://someother.printer:9100`
+```bash
+# Install dependencies
+poetry install
 
-which will set up two printers, "office" and "kitchen", pointed to
-two different ip printers.
+# Run web server
+python -m pt750.web
 
-Additionally, the default fonts (mono, sans, and serif) are set
-to DejaVuSansMono, DejaVuSans and DejaVuSerif. While these are
-perfectly functional fonts, there are fonts that scale better
-to lower resolutions.
+# Run CLI tool
+poetry run makelabel --printer tcp://192.168.1.100:9100 text "Hello World"
+```
 
-You can override or add fonts by putting the ttf fonts in a
-directory and adding that directory to the font path (a
-comma separated list of directories):
+## Configuration
 
-`L_FONT_DIRS=/fonts,/otherfonts`
+### Environment Variables
 
-and then mapping friendly names to individual font files,
-as such:
+- `L_PRINTERS`: Printer configuration (e.g., `pt750=tcp://192.168.1.100:9100`)
+- `L_FONT_DIRS`: Custom font directories (e.g., `/app/custom_fonts`)
+- `L_FONT_MAP`: Font name mappings (e.g., `mono=DejaVuSansMono.ttf`)
 
-`L_FONT_MAP=pragmata=PragmataPro_Mono_R_0828.ttf,consolas=consola.ttf`
+### Supported Label Types
 
-## Changes
+- **Text**: Plain text labels with alignment options
+- **QR Code**: QR codes with optional text lines
+- **ArUco**: Computer vision markers with customizable dictionaries
+- **Wrap**: Vertical text for cable wrapping
+- **Flag**: Horizontal text for cable flags
 
-0.2.1: Fix qr code label types in docker container
+### Supported Tape Sizes
 
-0.2.0: Add web interface
+- 24mm (full width)
+- 12mm (centered)
+- 9mm (centered) 
+- 6mm (centered)
 
-0.1.0: Initial release
+## API Endpoints
 
-## Notes
+- `GET /` - Web interface
+- `GET /config` - Printer and font configuration
+- `GET /status` - Printer status
+- `PUT /print` - Print label
+- `PUT /preview` - Generate label preview
+- `POST /fonts/upload` - Upload font file
+- `DELETE /fonts/{name}` - Remove font
 
-Raster Documentation: https://download.brother.com/welcome/docp100064/cv_pte550wp750wp710bt_eng_raster_102.pdf
+## Technical Details
+
+### Brother Raster Protocol
+
+This implementation follows the Brother Raster Command Reference v1.02 for PT-P750W/PT-E550W printers. Key features:
+
+- **Raster Graphics**: 180 DPI, 1-bit monochrome
+- **Print Width**: 128 pixels (16 bytes per line)
+- **Compression**: TIFF/PackBits run-length encoding
+- **Status Monitoring**: SNMP-based printer status detection
+- **Auto-cut Support**: Configurable cutting options
+
+### Transport Layers
+
+- **TCP/IP**: Network printing via port 9100 with SNMP status
+- **USB**: Direct device file access (Linux/macOS)
+- **HTTP**: Proxy through another PT750 instance
+
+## Version History
+
+### v2.0.0 (Current)
+- Major Brother protocol fixes for 12mm tape compatibility
+- Comprehensive font management system with upload/download
+- Real-time printer status monitoring with visual indicators
+- Automatic tape size detection from printer
+- Metric/imperial unit conversion toggle
+- Performance optimizations and UI improvements
+- Enhanced Docker configuration with persistent font storage
+
+### v0.2.1
+- Fix QR code label types in Docker container
+
+### v0.2.0  
+- Add web interface
+
+### v0.1.0
+- Initial release
+
+## Credits
+
+This project is based on the original [pt750 project by rpedde](https://github.com/rpedde/pt750). Special thanks to **rpedde** for the foundational work on Brother printer communication and the initial implementation of the Raster Command protocol.
+
+## Documentation
+
+- [Brother Raster Command Reference](https://download.brother.com/welcome/docp100064/cv_pte550wp750wp710bt_eng_raster_102.pdf)
+- [Brother PT-P750W Manual](https://support.brother.com/g/b/manuallist.aspx?c=us&lang=en&prod=p750weus)
+
+## License
+
+MIT License - See LICENSE file for details.
