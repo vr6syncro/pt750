@@ -1,10 +1,23 @@
-version: "3.8"
+
 services:
   pt750:
-    image: vr6syncro/pt750
-    container_name: PT750
+    build: .
+    container_name: pt750-web
     environment:
-      - L_PRINTERS=Name=tcp://IP:9100    
+      - L_PRINTERS=pt750=tcp://192.168.1.100:9100
+      - LOG_LEVEL=INFO
+      - L_FONT_DIRS=/app/custom_fonts
     ports:
-      - 5000:5000
+      - "8080:5000"
+    volumes:
+      - font_cache:/app/custom_fonts
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/config"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  font_cache:

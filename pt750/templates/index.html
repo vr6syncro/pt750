@@ -98,11 +98,20 @@
                   <form id="font-form">
                     <div class="mb-3">
                       <label class="form-label" for="fontname">Font</label>
-                      <select
-                        class="form-select"
-                        id="fontname"
-                        onclick="update_preview()"
-                      ></select>
+                      <div class="input-group">
+                        <select
+                          class="form-select"
+                          id="fontname"
+                          onclick="update_preview()"
+                        ></select>
+                        <button 
+                          class="btn btn-outline-primary" 
+                          type="button" 
+                          onclick="show_font_manager()"
+                          title="Font-Manager öffnen">
+                          📁
+                        </button>
+                      </div>
                     </div>
                     <div class="mb-3">
                       <label class="form-label" for="size">Size</label>
@@ -146,7 +155,12 @@
                   <form id="printer-form">
                     <div class="mb-3">
                       <label class="form-label" for="printer">Printer</label>
-                      <select class="form-select" id="printer"></select>
+                      <div class="input-group">
+                        <select class="form-select" id="printer" onchange="update_printer_status()"></select>
+                        <span class="input-group-text" id="printer_status">
+                          <span id="printer_dot" class="badge bg-secondary rounded-pill" title="Status unbekannt">●</span>
+                        </span>
+                      </div>
                     </div>
                   </form>
                 </div>
@@ -161,11 +175,20 @@
             <!-- Tapes -->
             <div class="mb-3">
               <label class="form-label" for="tape">Tape</label>
-              <select
-                class="form-select"
-                id="tape"
-                onclick="update_preview()"
-              ></select>
+              <div class="input-group">
+                <select
+                  class="form-select"
+                  id="tape"
+                  onclick="update_preview()"
+                ></select>
+                <button 
+                  class="btn btn-outline-secondary" 
+                  type="button" 
+                  onclick="detect_tape_from_printer()"
+                  title="Tape-Größe vom Drucker abrufen">
+                  🔍
+                </button>
+              </div>
             </div>
 
             <div id="lines_div" class="mb-3">
@@ -247,7 +270,6 @@ example label</textarea
             <div id="dictionary_div" class="mb-3">
               <label class="form-label" for="dictionary">Dictionary</label>
               <select
-                <input
                 class="form-select"
                 id="dictionary"
                 onclick="update_preview()"
@@ -304,12 +326,19 @@ example label</textarea
                 <div class="card-body">
                   <form id="font-form">
                     <div id="preview_div" class="mb-3">
-                      <div>
-                        <label
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span
                           id="preview_label"
                           class="form-label"
-                          for="preview"
-                        ></label>
+                        ></span>
+                        <button 
+                          id="units_toggle" 
+                          class="btn btn-outline-secondary btn-sm" 
+                          type="button" 
+                          onclick="toggle_units()"
+                          title="Auf Imperial (Zoll) umschalten">
+                          mm
+                        </button>
                       </div>
                       <img border="1px" id="preview" />
                     </div>
@@ -338,6 +367,54 @@ example label</textarea
           </div>
 
           <div id="warning_div" class="alert alert-success mt-4">Ok</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Font Manager Modal -->
+    <div class="modal fade" id="fontModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Font Manager</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h6>Font hochladen</h6>
+                
+                <!-- File Upload Only -->
+                <div class="mb-3">
+                  <label for="font_file" class="form-label">Font-Datei auswählen</label>
+                  <input type="file" class="form-control" id="font_file" accept=".ttf,.otf">
+                  <div class="form-text">Nur .ttf und .otf Dateien unterstützt</div>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="font_name" class="form-label">Font Name (optional)</label>
+                  <input type="text" class="form-control" id="font_name" placeholder="Meine Custom Font">
+                </div>
+                
+                <button class="btn btn-success w-100" onclick="upload_font_file()">
+                  <i class="bi-upload"></i> Font hochladen
+                </button>
+              </div>
+              
+              <div class="col-md-6">
+                <h6>Installierte Custom Fonts</h6>
+                <div id="cached_fonts" class="mb-3">
+                  <!-- Populated by JavaScript -->
+                </div>
+                <div class="alert alert-info small">
+                  <strong>Tipp:</strong> Nach dem Download wird die Font-Liste automatisch aktualisiert.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
         </div>
       </div>
     </div>
