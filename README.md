@@ -17,12 +17,47 @@ Modern web-based label printing interface for Brother PT-P750W/PT-E550W label pr
 ### Docker Compose (Recommended)
 
 ```bash
-git clone https://github.com/vr6syncro/pt750.git
+git clone https://github.com/vr6syncro/pt750.git -b v2
 cd pt750
 docker-compose up -d
 ```
 
 Access the web interface at `http://localhost:8080`
+
+### DockerHub (Pre-built Images)
+
+For the latest v2.0.0 release:
+```bash
+# Create docker-compose.yml
+services:
+  pt750:
+    image: vr6syncro/pt750:v2
+    container_name: pt750-web
+    environment:
+      - L_PRINTERS=pt750=tcp://192.168.1.100:9100
+      - L_FONT_DIRS=/app/custom_fonts
+    ports:
+      - "8080:5000"
+    volumes:
+      - font_cache:/app/custom_fonts
+    restart: unless-stopped
+
+volumes:
+  font_cache:
+
+# Run
+docker-compose up -d
+```
+
+Or run directly:
+```bash
+docker run -d \
+  --name pt750-web \
+  -p 8080:5000 \
+  -e L_PRINTERS=pt750=tcp://192.168.1.100:9100 \
+  -v font_cache:/app/custom_fonts \
+  vr6syncro/pt750:v2
+```
 
 ### Manual Installation
 
