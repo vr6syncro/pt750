@@ -25,6 +25,7 @@ dependencies = [
     "opencv-python",
     "httpx",
     "pydantic-settings",
+    "requests",
 ]
 
 [project.scripts]
@@ -36,9 +37,7 @@ cache-keys = [{ file = "pyproject.toml" }, { git = { commit = true, tags = true 
 [dependency-groups]
 dev = [
     "pytest",
-    "mypy",
     "jsf",
-    "requests",
     "ruff",
 ]
 
