@@ -1,4 +1,4 @@
-name: Build and push container images
+name: container build
 
 on:
   push:
@@ -11,9 +11,11 @@ on:
       - "master"
 
 jobs:
-  docker:
+  build-and-maybe-push:
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: checkout code
