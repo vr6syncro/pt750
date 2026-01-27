@@ -1,4 +1,4 @@
-name: pre-commit and unit tests
+name: unit-tests
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   unit-test:
-    name: unit-test code base
+    name: run unit tests
     runs-on: ubuntu-latest
 
     steps:
