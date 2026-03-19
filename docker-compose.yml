@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   pt750:
-    image: vr6syncro/pt750
+    image: ${IMAGE_PREFIX:-vr6syncro/pt750}:${IMAGE_TAG:-latest}
     container_name: PT750
     environment:
       - L_PRINTERS=Name=tcp://IP:9100    
